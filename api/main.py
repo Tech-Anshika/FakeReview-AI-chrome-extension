@@ -26,7 +26,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # -----------------------
 # Load Model
 # -----------------------
-MODEL_PATH = "models/distilbert_fake_review"
+MODEL_PATH = "Anshikaaaaaaaa/distilbert_fake_review"
 
 tokenizer = DistilBertTokenizerFast.from_pretrained(MODEL_PATH)
 model = DistilBertForSequenceClassification.from_pretrained(MODEL_PATH)
