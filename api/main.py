@@ -72,8 +72,15 @@ else:
         ort_session = ort.InferenceSession(model_path)
         print("✅ Downloaded & Loaded Model Successfully!")
     except Exception as e:
-        print(f"❌ Critical Error: Could not load model locally or from Hub. {e}")
-        raise e
+        import traceback
+        print(f"❌ Critical Error: Could not load model locally or from Hub.")
+        traceback.print_exc()
+        # Do not raise immediately to allow app to start (will fail on predict)
+        # This lets us see the logs
+        print("⚠️ Application starting WITHOUT model via rollback...")
+        ort_session = None
+        tokenizer = None
+
 
 # -----------------------
 # Health Check
