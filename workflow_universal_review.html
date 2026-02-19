@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Review Analyzer Workflow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        p.description {
+            color: #555;
+            text-align: center;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .chart-wrapper {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🚀 Future Workflow: Universal Batch Analysis</h1>
+    <p class="description">
+        This flowchart illustrates the logic for the "Analyze All Reviews" feature.
+        It intelligently switches between <strong>Automatic Mode</strong> (for known sites) and <strong>Manual
+            Mode</strong> (fallback).
+    </p>
+
+    <!-- Chart Container -->
+    <div id="chart-area" class="chart-wrapper">
+        <div class="mermaid">
+            flowchart TD
+            style A fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+            style B fill:#ffe0b2,stroke:#ef6c00,stroke-width:2px
+            style G fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+            style H fill:#ffcdd2,stroke:#c62828,stroke-width:2px
+            style I fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+
+            A([User Clicks 'Analyze All Reviews']) --> B{Current Website Known?}
+
+            %% Known Site Branch
+            B -- Yes (Amazon/Flipkart) --> C[Load Config specific to Site]
+            C --> D[Auto-Detect All Reviews on Page]
+            D --> E[Batch Processing Request Array]
+            E --> F[Send to Backend API Parallel]
+
+            F --> G{Is Review Fake?}
+            G -- Yes --> H[🔴 Mark as Fake Badge]
+            G -- No --> I[🟢 Mark as Genuine Badge]
+
+            %% Unknown Site Branch
+            B -- No (Unknown Site) --> J[Show Alert: 'Auto-Mode Not Supported']
+            J --> K[Suggest Manual Selection Mode]
+            K --> L[User Selects Text Manually]
+            L --> M[Floating Button Appears 🔍]
+            M --> N[Individual Check API Call]
+            N --> G
+
+            H --> O([Process Complete])
+            I --> O
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button onclick="saveAsImage()">💾 Save Flowchart as PNG</button>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+
+        function saveAsImage() {
+            const element = document.getElementById("chart-area");
+
+            html2canvas(element, {
+                backgroundColor: "#ffffff",
+                scale: 2 // High Resolution
+            }).then(canvas => {
+                const link = document.createElement("a");
+                link.download = "fake_review_workflow.png";
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
+    </script>
+
+</body>
+
+</html>

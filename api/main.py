@@ -14,23 +14,66 @@ from behavior.behavior_engine import calculate_behavior_score
 # App
 # -----------------------
 app = FastAPI(
-    title="Fake Review Detection API",
     description="Hybrid AI (Text + Behavior) Fraud Detection [ONNX Optimized]",
     version="1.1"
 )
 
 # -----------------------
+# CORS Middleware
+# -----------------------
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
+
+# -----------------------
 # Load Model (ONNX)
 # -----------------------
-REPO_ID = "Anshikaaaaaaaa/distilbert_fake_review"
-FILENAME = "model.onnx"
+# -----------------------
+# Load Model (ONNX)
+# -----------------------
+# -----------------------
+# Load Model (ONNX)
+# -----------------------
+import os
 
-print("Downloading/Loading ONNX model...")
-model_path = hf_hub_download(repo_id=REPO_ID, filename=FILENAME)
-tokenizer = DistilBertTokenizerFast.from_pretrained(REPO_ID)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Correct path relative to api/main.py -> ../backend/models/distilbert_fake_review
+MODEL_DIR = os.path.join(BASE_DIR, "..", "backend", "models", "distilbert_fake_review")
 
-# Create ONNX Runtime Session
-ort_session = ort.InferenceSession(model_path)
+MODEL_PATH = os.path.join(MODEL_DIR, "model.onnx")
+
+print(f"Loading model from: {MODEL_DIR} ...")
+
+if os.path.exists(MODEL_PATH):
+    # Load Local
+    try:
+        tokenizer = DistilBertTokenizerFast.from_pretrained(MODEL_DIR)
+        ort_session = ort.InferenceSession(MODEL_PATH)
+        print("✅ Local ONNX Model Loaded Successfully!")
+    except Exception as e:
+        print(f"❌ Failed to load local model: {e}")
+        raise e
+else:
+    # Fallback to Download (only if local missing)
+    print("⚠️ Local model not found. Attempting download from HuggingFace...")
+    REPO_ID = "Anshikaaaaaaaa/distilbert_fake_review"
+    FILENAME = "model.onnx"
+    TOKEN = os.getenv("HF_TOKEN")
+    
+    try:
+        model_path = hf_hub_download(repo_id=REPO_ID, filename=FILENAME, token=TOKEN)
+        tokenizer = DistilBertTokenizerFast.from_pretrained(REPO_ID, token=TOKEN)
+        ort_session = ort.InferenceSession(model_path)
+        print("✅ Downloaded & Loaded Model Successfully!")
+    except Exception as e:
+        print(f"❌ Critical Error: Could not load model locally or from Hub. {e}")
+        raise e
 
 # -----------------------
 # Health Check
@@ -78,20 +121,39 @@ def predict(review: ReviewInput):
             
             # Softmax
             probs = softmax(logits[0])
-            text_risk = float(probs[1] * 100)
+            
+            # ❗ CRITICAL FIX: Training logic was:
+            # Class 0: 'CG' (Computer Generated / Fake)
+            # Class 1: 'OR' (Original / Genuine)
+            #
+            # Previously we used probs[1] which meant "Probability of being GENUINE".
+            # So a 99% Genuine review was showing as 99% Text Risk (Fake).
+            #
+            # Correct Logic: Use probs[0] which is the probability of being FAKE.
+            text_risk = float(probs[0] * 100)
 
         # -------- BEHAVIOR SCORE --------
-        # Ensure behavior scoring doesn't crash on missing optional fields
         review_dict = review.dict()
-        # safe defaults for behavior calc might be handled inside, but good to be sure.
-        # Pydantic dict() includes None for missing fields. 
         behavior_score, reasons = calculate_behavior_score(review_dict)
 
+        # DEBUG LOGGING
+        print(f"🔍 Analysis: Text Risk (Fake Prob)={text_risk:.2f}, Behavior Score={behavior_score}")
+
         # -------- FINAL DECISION --------
-        if text_risk >= 45 and behavior_score >= 25:
+        
+        prediction = "Genuine"
+        confidence = 0.0
+
+        if text_risk > 60:
+            # Case 1: High Text Risk (Model says Fake)
+            prediction = "Fake"
+            confidence = text_risk
+        elif text_risk >= 40 and behavior_score >= 25:
+            # Case 2: Hybrid
             prediction = "Fake"
             confidence = max(text_risk, behavior_score)
         else:
+            # Case 3: Genuine
             prediction = "Genuine"
             confidence = 100 - text_risk
 
