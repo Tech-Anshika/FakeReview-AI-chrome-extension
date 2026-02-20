@@ -9,48 +9,39 @@ The project follows a **Microservices Architecture**:
 - **Backend (Server):** Python FastAPI application hosting the ML models.
 - **ML Engine:** DistilBERT (Transformer model) optimized with ONNX Runtime for sub-millisecond inference, combined with heuristic algorithms for metadata scoring.
 
-## 3. Core Features
+## 3. Core Features & Visual Demonstration
 
-### A. Batch Analysis (Automated Page Scan)
-- **Function:** Scans the entire visible product page.
-- **Capability:** Identifies review containers automatically on supported sites (Amazon, Flipkart, Myntra) using specific DOM selectors.
-- **Universal Fallback:** If a site is not explicitly supported, a "Universal Parser" attempts to intelligently locate review text blocks using heuristic density analysis.
-- **Visual Output:** Injects color-coded badges (`✅ Genuine` or `⚠️ Fake Review`) directly into the web page next to each review.
+### A. Real-Time Analysis with Badges
+In-page analysis injects clear visual indicators next to each review.
+- **Green Badge:** Indicates a "Genuine Review".
+- **Red Badge:** Indicates a "Fake/Suspicious Review".
 
-### B. Manual Analysis Mode (Text Selection)
-- **Function:** Allows users to check specific text segments on *any* website.
-- **Interaction:**
-    1. User highlights text on a webpage.
-    2. A floating "Magnifier Button" (🔎) appears.
-    3. Clicking the button triggers an immediate API analysis.
-- **Output:** A professional popup card appears in the top-right corner displaying:
-    - Verdict (Fake/Genuine)
-    - Confidence Score (%)
-    - Risk Probability
+![Amazon Badges](docs/assets/badges_amazon.png)
 
-### C. Backend Intelligence
-- **Deep Learning:** Uses `Anshikaaaaaaaa/distilbert_fake_review` (Fine-tuned DistilBERT) to understand semantic context and sentiment anomalies.
-- **Behavioral Scoring:** Analyzes metadata fields (if available) such as:
-    - Verified Purchase Status
-    - Review Timestamp/Burst Patterns
-    - Rating Deviation
-    - Helpful Votes vs. Review Length ratio
+### B. Popup Dashboard
+The main extension popup allows users to scan an entire page with one click or analyze generic text.
+
+![Popup Dashboard](docs/assets/dashboard_myntra.png)
+
+### C. Manual Analysis Mode (Text Selection)
+For use on any website, users can highlight text and click the 🔎 magnifier icon for an instant analysis card.
+
+![Manual Mode Result](docs/assets/manual_mode_popup.png)
 
 ## 4. Operational Workflow (Logic Flow)
-The extension follows a robust fallback strategy to ensure maximum compatibility, as modeled in our system flowchart:
+The extension follows a robust fallback strategy to ensure maximum compatibility. The system first attempts precise DOM selection; if that fails, it switches to a universal parser, ensuring reviews are always detected.
 
-1.  **Initiation:** User clicks "Analyze All Reviews" in the popup.
-2.  **Site Detection:** The system checks `window.location.hostname`.
-    *   **Known Site (e.g., Amazon):** It loads a precise "Site Config" with specific CSS selectors for title, body, rating, and author.
-    *   **Unknown Site:** It skips directly to the **Universal Parser**.
+![Logic Flowchart](docs/assets/flowchart.png)
+
+### Logic Breakdown:
+1.  **Initiation:** User clicks "Analyze All Reviews".
+2.  **Site Detection:** Checks if the site is Amazon, Flipkart, or Myntra to load specific config.
 3.  **Extraction & Validation:**
-    *   The system attempts to extract reviews using the chosen method.
-    *   **Decision Node:** If the Site Config fails (zero reviews found), the system **automatically falls back** to the Universal Parser.
-4.  **Universal Fallback:**
-    *   The Universal Parser scans the DOM for repeating text structures common in review sections.
-5.  **Final State:**
-    *   **Success:** Reviews are found -> Sent to Backend API -> Results displayed via Badges.
-    *   **Failure:** No reviews found -> System prompts the user to use **Manual Mode**.
+    *   **Config Success:** Uses specific selectors.
+    *   **Fallback:** If selectors fail, the **Universal Parser** scans the DOM for review-like structures.
+4.  **Final State:**
+    *   **Success:** Results displayed via badges.
+    *   **Manual Mode:** Any text can be manually checked as a backup.
 
 ## 5. Technology Stack
 - **Frontend:** HTML5, CSS3, JavaScript (ES6+), Chrome Extension API (Manifest V3)
