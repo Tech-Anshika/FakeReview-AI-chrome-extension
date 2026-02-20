@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - HF_TOKEN=${HF_TOKEN}  # Pass Hugging Face token if using private models
+    # volumes:
+    #   - .:/app  # Optional: For hot-reloading (uncomment for development)
+    restart: unless-stopped
+    image: fakereview-ai-backend:latest

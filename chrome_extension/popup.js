@@ -9,7 +9,7 @@ document.getElementById("checkBtn").addEventListener("click", () => {
         return;
     }
 
-    fetch("http://localhost:8000/predict", {
+    fetch("http://127.0.0.1:8000/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: text })
@@ -26,7 +26,7 @@ document.getElementById("checkBtn").addEventListener("click", () => {
         })
         .catch(err => {
             console.error(err);
-            alert("Could not connect to backend (http://localhost:8000). Ensure it's running.");
+            alert("Could not connect to backend (http://127.0.0.1:8000). Ensure it's running.");
         });
 });
 

@@ -79,6 +79,15 @@ FakeReview-AI/
    ```
    *The backend must be running locally (`http://127.0.0.1:8000`) for the extension to work.*
 
+### 🐳 Run with Docker (Alternative)
+If you have Docker installed, you can start the backend with a single command:
+
+1. **Build and Run:**
+   ```bash
+   docker-compose up --build
+   ```
+   *The API will be available at `http://localhost:8000`, which matches your extension's configuration.*
+
 ### Chrome Extension Setup
 1. Open Google Chrome and navigate to `chrome://extensions/`.
 2. Enable **Developer mode** (toggle in the top-right corner).
