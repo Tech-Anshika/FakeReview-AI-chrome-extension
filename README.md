@@ -2,6 +2,8 @@
 
 **FakeReview-AI** is a comprehensive system designed to detect fraudulent product reviews in E-Commerce environments. It features a powerful **Chrome Extension** backed by a hybrid machine learning backend that combines deep learning (DistilBERT) with behavioral analysis.
 
+![Popup Dashboard](docs/assets/extension%20chatbot.jpeg)
+
 ## 🚀 Features
 
 ### 🌐 Chrome Extension Capabilities
@@ -9,19 +11,33 @@
 - **Batch Processing**: "Analyze All" button to scan an entire product review page instantly.
 - **Manual Mode**: precise tool - select *any text* on *any website*, click the magnifier 🔎, and get an instant authenticity report.
 - **Visual Indicators**: Clear, color-coded badges (✅ Genuine / ⚠️ Fake) injected directly next to reviews.
-- **Detailed Insights**: View confidence scores, text risk, and metadata analysis in a clean, professional popup.
+
+### 📸 Screenshots
+
+| Amazon Integration | Flipkart Integration | Myntra Integration |
+|:---:|:---:|:---:|
+| ![Amazon](docs/assets/amazon.jpeg) | ![Flipkart](docs/assets/flipkart.png) | ![Myntra](docs/assets/myntra.png) |
+
+### 🛠️ Manual Mode (Universal Parser)
+Analyze text on any website using our floating magnifier tool:
+
+![Manual Mode](docs/assets/manualselector.jpeg)
+![Manual Result](docs/assets/manualselector-result.jpeg)
 
 ### 🧠 Core Technology
-- **Hybrid Analysis Engine**: Merges **Deep Learning (DistilBERT)** for text content analysis with **Behavioral Heuristics** (user patterns) for a dual-layer detection strategy.
+- **Hybrid Analysis Engine**: Merges **Deep Learning (DistilBERT)** for text content analysis with **Behavioral Heuristics** (user patterns).
 - **Microservices Architecture**: Built with **FastAPI** for high-performance, real-time inference.
 - **Behavioral Scoring**: Analyzes metadata such as review frequency, rating deviation, verified purchase status, and account age.
 
-## 🛠️ Tech Stack
+## 🔄 How It Works (Logic Flow)
+The system follows a robust fallback strategy to ensure maximum compatibility:
 
-- **Extension**: HTML5, CSS3, JavaScript (Manifest V3)
-- **Backend API**: Python 3.9+, FastAPI, Uvicorn
-- **ML/DL**: PyTorch, Transformers (Hugging Face), OnnxRuntime
-- **Data Processing**: Pandas, NumPy
+![Logic Flowchart](docs/assets/FakeReview-AI-Flowchart.png)
+
+1.  **Site Detection:** Automatically identifies if you are on a supported platform.
+2.  **Intelligent Selection:** Attempts to use pre-configured selectors.
+3.  **Automatic Fallback:** Switches to a **Universal Parser** if site structure changes.
+4.  **Manual Override:** Always available as a powerful backup tool.
 
 ## 📂 Project Structure
 
@@ -37,6 +53,7 @@ FakeReview-AI/
 │   └── popup.html       # Extension Popup UI
 ├── behavior/            # Behavioral analysis logic
 ├── models/              # Trained models (DistilBERT ONNX)
+├── docs/assets/         # Screenshots and Project Images
 ├── testing/             # Evaluation scripts
 ├── training/            # Model training scripts
 └── requirements.txt     # Python dependencies
@@ -68,14 +85,6 @@ FakeReview-AI/
 3. Click **Load unpacked**.
 4. Select the `chrome_extension` folder from this project directory.
 5. The **FakeReview-AI** icon will appear in your toolbar!
-
-## 🏎️ Usage
-
-1. **Visit a Product Page**: Go to a product on Amazon, Flipkart, or Myntra.
-2. **Automatic/Batch**: Click the extension icon and select "Analyze All Reviews" to scan the page.
-   - *Green Badge*: Genuine Review
-   - *Red Badge*: Fake/Suspicious Review
-3. **Manual Check**: Highlight any text on the page. A 🔎 magnifier icon will appear. Click it to analyze the specific text.
 
 ## 🤝 Contributing
 Contributions are welcome! Please open an issue or submit a pull request.
