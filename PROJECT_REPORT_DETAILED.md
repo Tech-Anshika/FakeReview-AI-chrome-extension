@@ -12,26 +12,38 @@ The project follows a **Microservices Architecture**:
 ## 3. Core Features & Visual Demonstration
 
 ### A. Real-Time Analysis with Badges
-In-page analysis injects clear visual indicators next to each review.
-- **Green Badge:** Indicates a "Genuine Review".
-- **Red Badge:** Indicates a "Fake/Suspicious Review".
+In-page analysis injects clear visual indicators next to each review. The system automatically detects review containers on major e-commerce platforms.
 
-![Amazon Badges](docs/assets/badges_amazon.png)
+**Amazon Integration (Green/Red Badges):**
+![Amazon Badges](docs/assets/amazon.jpeg)
+
+**Flipkart Integration:**
+![Flipkart Badges](docs/assets/flipkart.png)
+
+**Myntra Integration:**
+![Myntra Badges](docs/assets/myntra.png)
 
 ### B. Popup Dashboard
 The main extension popup allows users to scan an entire page with one click or analyze generic text.
 
-![Popup Dashboard](docs/assets/dashboard_myntra.png)
+![Popup Dashboard](docs/assets/extension chatbot.jpeg)
 
 ### C. Manual Analysis Mode (Text Selection)
-For use on any website, users can highlight text and click the 🔎 magnifier icon for an instant analysis card.
+For use on any website (Universal Parser), users can highlight text and click the 🔎 magnifier icon for an instant analysis card. This feature ensures compatibility with non-standard sites like brand stores (e.g., Noise).
 
-![Manual Mode Result](docs/assets/manual_mode_popup.png)
+**Manual Selector Tool:**
+![Manual Selector](docs/assets/manualselector.jpeg)
+
+**Analysis Result Card:**
+![Manual Result](docs/assets/manualselector-result.jpeg)
+
+**Universal Parser in Action (Brand Site):**
+![Universal Parser](docs/assets/noise(univercel webs).jpeg)
 
 ## 4. Operational Workflow (Logic Flow)
 The extension follows a robust fallback strategy to ensure maximum compatibility. The system first attempts precise DOM selection; if that fails, it switches to a universal parser, ensuring reviews are always detected.
 
-![Logic Flowchart](docs/assets/flowchart.png)
+![Logic Flowchart](docs/assets/FakeReview-AI-Flowchart.png)
 
 ### Logic Breakdown:
 1.  **Initiation:** User clicks "Analyze All Reviews".
